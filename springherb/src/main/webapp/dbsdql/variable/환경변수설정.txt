@@ -1,0 +1,14 @@
+[JDK  환경변수 설정]
+1 . JAVA_HOME 만들기
+이름변수 : JAVA_HOME
+변수값 : C:\Java\jdk1.8.0_191
+
+2 . Path 설정
+변수이름 : path 
+변수값 : %JAVA_HOME%\bin
+
+3 .  classpath 변수 만들기
+변수이름 : classpath
+변수 값 : %classpath%;.
+
+**기본에 있는거 지우면 안댕ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ

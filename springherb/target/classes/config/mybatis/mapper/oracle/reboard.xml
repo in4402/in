@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="config.mybatis.mapper.oracle.reBoard">
+	<parameterMap type="map" id="delMap">
+		<parameter property="no" javaType="String" jdbcType="VARCHAR" mode="IN"/>
+		<parameter property="step" javaType="String" jdbcType="VARCHAR" mode="IN"/>
+		<parameter property="groupNo" javaType="String" jdbcType="VARCHAR" mode="IN"/>
+	</parameterMap>
+	
+	<insert id="insertReBoard" parameterType="reBoardVo">
+		<selectKey keyProperty="no" resultType="int" order="BEFORE">
+			select reBoard_seq.nextval from dual
+		</selectKey>
+		insert into reBoard(no, name, pwd, title, email, content, groupno, filename, filesize, originalfilename)
+		values(#{no}, #{name},#{pwd},#{title},#{email},#{content}, #{no}, #{fileName}, #{fileSize}, #{originalFileName})
+	</insert>
+	
+	<select id="selectAll" parameterType="searchVo" resultType="reBoardVo">
+		select *
+		from(
+		    select rownum as ROW_NUM, A.*, 
+		    		(sysdate-regdate)*24 as newImgTerm 
+		    from(
+		        select * from reBoard
+		        <if test="searchKeyword!=null and searchKeyword!=''">
+		        	where ${searchCondition} 
+		        		like '%' || #{searchKeyword} || '%'
+		        </if>
+		        order by no desc
+		    ) A
+		) <![CDATA[ where ROW_NUM>#{firstRecordIndex} 
+			and ROW_NUM<=#{firstRecordIndex} + #{recordCountPerPage}
+			]]>
+	</select>
+	
+	<select id="selectTotalRecord" parameterType="searchVo" resultType="int">
+		select count(*) from reBoard
+        <if test="searchKeyword!=null and searchKeyword!=''">
+        	where ${searchCondition} 
+        		like '%' || #{searchKeyword} || '%'
+        </if>	
+	</select>
+	
+	<update id="updateReadCount" parameterType="int">
+		update reBoard 
+		set readcount=readcount+1
+		where no=#{no}
+	</update>
+	
+	<select id="selectByNo" parameterType="int" resultType="reBoardVo">
+		select * from reBoard where no=#{no}
+	</select>
+	
+	<update id="updateReBoard" parameterType="reBoardVo">
+		update reBoard 
+		set name=#{name},title=#{title},email=#{email},content=#{content} 
+		where no=#{no} and pwd=#{pwd}
+	</update>
+	
+	<!-- <delete id="deleteReBoard" parameterType="map">
+		delete from reBoard 
+		where no=#{no} and pwd=#{pwd}
+	</delete> -->
+	
+	<delete id="deleteReBoard" parameterMap="delMap">
+		call delete_reboard(?,?,?)
+	</delete>
+	<update id="updateDownCount" parameterType="int">
+		update reBoard 
+		set downcount=downcount+1
+		where no=#{no}
+	</update>
+	
+	<select id="selectPwd" parameterType="int" resultType="string">
+		select pwd from reboard
+		where no=#{no}
+	</select>
+	
+</mapper>
+
+
+
+
+
+
+
+
+

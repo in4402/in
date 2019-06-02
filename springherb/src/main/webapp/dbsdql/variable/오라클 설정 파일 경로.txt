@@ -1,0 +1,5 @@
+오라클 설정 파일 경로
+C:\oraclexe\app\oracle\product\11.2.0\server\network\ADMIN\
+
+listener.ora
+tnsnames.ora
